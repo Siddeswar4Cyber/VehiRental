@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VehiRental | Manage Vehicles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/sidebar.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --danger: #ef233c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin:0 200px;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header-title h2 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+        
+        /* Filters */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-group {
+            margin-bottom: 0;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .filter-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        select.filter-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 15px;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d11a2a;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        /* Vehicles Table */
+        .vehicles-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .vehicles-table th,
+        .vehicles-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .vehicles-table th {
+            background-color: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .vehicles-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .vehicles-table tr:hover {
+            background-color: rgba(58, 134, 255, 0.03);
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success);
+        }
+
+        .status-rented {
+            background-color: rgba(255, 190, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-inactive {
+            background-color: rgba(239, 35, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* No Vehicles */
+        .no-vehicles {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicles-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="../static/images/logo.png" alt="VehRental Logo">
+                <div class="logo-text">
+                    <span class="vehi">Vehi</span><span class="rental">Rental</span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/add-vehicle" class="nav-link">
+                        <i class="fas fa-car"></i>
+                        <span>Add Vehicle</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/manage-vehicles" class="nav-link active">
+                        <i class="fas fa-list"></i>
+                        <span>Manage Vehicles</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/bookings" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Bookings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>    
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h2>Manage Vehicles</h2>
+                </div>
+                <a href="/admin/add-vehicle" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add Vehicle
+                </a>
+            </header>
+            
+            <!-- Filters -->
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="filter-class-type">Class Type</label>
+                    <select id="filter-class-type" class="filter-control">
+                        <option value="">All Types</option>
+                        <option value="car">Car</option>
+                        <option value="bus">Bus</option>
+                        <option value="van">Van</option>
+                        <option value="tempo">Tempo</option>
+                        <option value="bike">Bike</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter-class">Class</label>
+                    <select id="filter-class" class="filter-control">
+                        <option value="">All Classes</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="SUV">SUV</option>
+                        <option value="Mini Car">Mini Car</option>
+                        <option value="Luxury">Luxury</option>
+                        <option value="Mini Bus">Mini Bus</option>
+                        <option value="Coach">Coach</option>
+                        <option value="Passenger Van">Passenger Van</option>
+                        <option value="Cargo Van">Cargo Van</option>
+                        <option value="Small Tempo">Small Tempo</option>
+                        <option value="Large Tempo">Large Tempo</option>
+                        <option value="Royal Enfield">Royal Enfield</option>
+                        <option value="Sports Bike">Sports Bike</option>
+                        <option value="Scooter">Scooter</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter-status">Status</label>
+                    <select id="filter-status" class="filter-control">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="rented">Rented</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filter-location">Location</label>
+                    <input type="text" id="filter-location" class="filter-control" placeholder="Pincode">
+                </div>
+            </div>
+            
+            <!-- Vehicles Table -->
+            <div class="table-responsive">
+                <table class="vehicles-table">
+                    <thead>
+                        <tr>
+                            <th>Reg No.</th>
+                            <th>Class Type</th>
+                            <th>Class</th>
+                            <th>Status</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vehicles-list">
+                        {% for vehicle in vehicles %}
+                            <tr data-class-type="{{ vehicle.class_type }}" data-class="{{ vehicle.class }}" data-status="{{ vehicle.status }}" data-location="{{ vehicle.location }}">
+                            <td>{{ vehicle.reg_no }}</td>
+                            <td>{{ vehicle.class_type }}</td>
+                            <td>{{ vehicle.class }}</td>
+                            <td><span class="status-badge {% if vehicle.status == 'active' %}status-active{% elif vehicle.status == 'rented' %}{% else %}status-inactive{% endif %}">{{ vehicle.status }}</span></td>
+                            <td>{{ vehicle.location }}</td>
+                            <td class="actions">
+                                <button class="btn btn-danger btn-sm delete-btn" data-reg-no="{{ vehicle.reg_no }}">Delete</button>
+                            </td>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- No Vehicles Message (hidden by default) -->
+            <div class="no-vehicles" id="no-vehicles" style="display: none;">
+                <i class="fas fa-car" style="font-size: 40px; color: var(--gray); margin-bottom: 15px;"></i>
+                <h3>No Vehicles Found</h3>
+                <p>There are no vehicles matching your filters.</p>
+                <button class="btn btn-outline" id="reset-filters">Reset Filters</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm Deletion</div>
+                <div class="modal-close">&times;</div>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete vehicle <strong id="delete-reg-no"></strong>? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline cancel-delete">Cancel</button>
+                <button class="btn btn-danger confirm-delete">Delete Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter Functionality
+        function filterVehicles() {
+            const classTypeFilter = document.getElementById('filter-class-type').value.toLowerCase();
+            const classFilter = document.getElementById('filter-class').value.toLowerCase();
+            const statusFilter = document.getElementById('filter-status').value.toLowerCase();
+            const locationFilter = document.getElementById('filter-location').value.toLowerCase();
+            
+            const vehicles = document.querySelectorAll('#vehicles-list tr');
+            let visibleCount = 0;
+            
+            vehicles.forEach(vehicle => {
+                const classType = vehicle.dataset.classType.toLowerCase();
+                const vehicleClass = vehicle.dataset.class.toLowerCase();
+                const status = vehicle.dataset.status.toLowerCase();
+                const location = vehicle.dataset.location.toLowerCase();
+                
+                const matchesClassType = !classTypeFilter || classType === classTypeFilter;
+                const matchesClass = !classFilter || vehicleClass.includes(classFilter);
+                const matchesStatus = !statusFilter || status === statusFilter;
+                const matchesLocation = !locationFilter || location.includes(locationFilter);
+                
+                if (matchesClassType && matchesClass && matchesStatus && matchesLocation) {
+                    vehicle.style.display = '';
+                    visibleCount++;
+                } else {
+                    vehicle.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no vehicles message
+            if (visibleCount === 0) {
+                document.getElementById('no-vehicles').style.display = 'block';
+            } else {
+                document.getElementById('no-vehicles').style.display = 'none';
+            }
+        }
+        
+        // Initialize filters
+        document.getElementById('filter-class-type').addEventListener('change', filterVehicles);
+        document.getElementById('filter-class').addEventListener('change', filterVehicles);
+        document.getElementById('filter-status').addEventListener('change', filterVehicles);
+        document.getElementById('filter-location').addEventListener('input', filterVehicles);
+        
+        // Reset filters
+        document.getElementById('reset-filters').addEventListener('click', function() {
+            document.getElementById('filter-class-type').value = '';
+            document.getElementById('filter-class').value = '';
+            document.getElementById('filter-status').value = '';
+            document.getElementById('filter-location').value = '';
+            filterVehicles();
+        });
+        
+        // Delete Functionality
+        let vehicleToDelete = null;
+        
+        function showDeleteModal(regNo) {
+            vehicleToDelete = regNo;
+            document.getElementById('delete-reg-no').textContent = regNo;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+        
+        function hideDeleteModal() {
+            document.getElementById('delete-modal').style.display = 'none';
+            vehicleToDelete = null;
+        }
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const regNo = this.dataset.regNo;
+                showDeleteModal(regNo);
+            });
+        });
+        
+        // Modal event listeners
+        document.querySelector('.modal-close').addEventListener('click', hideDeleteModal);
+        document.querySelector('.cancel-delete').addEventListener('click', hideDeleteModal);
+        document.querySelector('.confirm-delete').addEventListener('click', function() {
+            if (vehicleToDelete) {
+                // In a real app, you would send this to your backend
+                console.log('Deleting vehicle:', vehicleToDelete);
+                
+                // Send delete request to backend
+                fetch(`/admin/delete-vehicle?reg_no=${encodeURIComponent(vehicleToDelete)}`, {
+                    method: 'POST'
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.json();
+                    }
+                })
+                .then(data => {
+                    if (data?.success) {
+                        document.querySelector(`.delete-btn[data-reg-no="${vehicleToDelete}"]`).closest('tr').remove();
+                        filterVehicles();
+                        alert('Vehicle deleted successfully');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting vehicle');
+                });
+            
+                hideDeleteModal();
+            }
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('delete-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,301 @@
+:root {
+    --primary: #4361ee;
+    --secondary: #3f37c9;
+    --accent: #f72585;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --success: #4cc9f0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Login Container */
+.login-container {
+    position: relative;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    padding: 40px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    transform-style: preserve-3d;
+    transition: all 0.5s ease;
+}
+
+.login-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Logo */
+.logo {
+    margin-bottom: 30px;
+}
+
+.logo img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.logo-text {
+    font-size: 45px;
+    font-weight: bold;
+}
+
+.logo-text .vehi {
+    color: #1f3b78;
+}
+
+.logo-text .rental {
+    color: #34a853;
+}
+
+/* Input Group Shared Styles */
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #495057;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: var(--light);
+}
+
+.input-group input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    background-color: white;
+}
+
+.input-group i {
+    position: absolute;
+    left: 15px;
+    top: 38px;
+    color: var(--primary);
+    font-size: 16px;
+}
+
+.required {
+    color: #e63946;
+    font-size: 12px;
+}
+
+/* Remember Me & Forgot Password */
+.remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 13px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+}
+
+.remember-me input {
+    margin-right: 8px;
+    accent-color: var(--primary);
+}
+
+.forgot-password a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+}
+
+/* Signup Link */
+.signup-link {
+    font-size: 14px;
+    color: var(--dark);
+}
+
+.signup-link a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.signup-link a:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+}
+
+/* Register Container */
+.register-container {
+    position: relative;
+    top: 15%;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    width: 450px;
+    padding: 40px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+    transform-style: preserve-3d;
+    transition: all 0.5s ease;
+    margin: 20px auto;
+}
+
+.register-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Register Header */
+.register-header {
+    margin-bottom: 30px;
+}
+
+.register-header img {
+    width: 70px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.register-header h1 {
+    color: #3a0ca3;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.register-header p {
+    color: #495057;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Name & Password Fields */
+.name-fields,
+.password-fields {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.name-fields .input-group,
+.password-fields .input-group {
+    flex: 1;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+    height: 4px;
+}
+
+.strength-bar {
+    flex: 1;
+    background: #e9ecef;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Register Button */
+.register-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #3a0ca3, #4361ee);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.register-btn:hover {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(58, 12, 163, 0.3);
+}
+
+/* Login Link */
+.login-link {
+    font-size: 14px;
+    color: #495057;
+}
+
+.login-link a {
+    color: #4361ee;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #3a0ca3;
+    text-decoration: underline;
+}
+
+/* Error Message */
+.error-message {
+    color: red;
+    font-size: 0.9rem;
+    margin-top: 4px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.error-message.hidden {
+    display: none;
+}

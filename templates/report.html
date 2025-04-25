@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VehiRental | Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/sidebar.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --danger: #ef233c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin: 0 200px;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header-title h2 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+        
+        /* Reports Container */
+        .reports-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .reports-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Report Form */
+        .report-form .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .report-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .report-form .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .report-form select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+        
+        .report-form textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 15px;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d11a2a;
+        }
+        
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 13px;
+        }
+        
+        /* Reports Filter */
+        .reports-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        /* Reports List */
+        .reports-list {
+            margin-top: 20px;
+        }
+        
+        .report-item {
+            padding: 20px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .report-item:hover {
+            border-color: var(--primary);
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .report-id {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .report-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: rgba(58, 134, 255, 0.1);
+            color: var(--primary);
+        }
+        
+        .report-date {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .report-text {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        
+        .no-reports {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .report-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .report-actions {
+                justify-content: flex-start;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo" style="padding: 2px 25px;">
+                <img src="../static/images/logo.png" alt="VehRental Logo">
+                <div class="logo-text">
+                    <span class="vehi">Vehi</span><span class="rental">Rental</span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/book-vehicle" class="nav-link">
+                        <i class="fas fa-car"></i>
+                        <span>Book Vehicle</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/booking-history" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>Booking History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/feedback" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Feedback</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/report" class="nav-link active">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/profile" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>    
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h2>Reports</h2>
+                </div>
+            </header>
+            
+            <!-- Reports Container -->
+            <div class="reports-container">
+                <!-- Submit Report Section -->
+                <section class="reports-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Submit New Report</h3>
+                    </div>
+                    
+                    <form action="/home/report" method="POST" class="report-form" id="report-form">
+                        <div class="form-group">
+                            <label for="report-type">Report Type</label>
+                            <select id="report-type" class="form-control" name="report_type" required>
+                                <option value="">-- Select report type --</option>
+                                <option value="Billing Issue">Billing Issue</option>
+                                <option value="Vehicle Problem">Vehicle Problem</option>
+                                <option value="Service Complaint">Service Complaint</option>
+                                <option value="Website Issue">Website Issue</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="report-text">Report Details</label>
+                            <textarea id="report-text" class="form-control" name="report_text" required placeholder="Please describe the issue in detail..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </form>
+                </section>
+                
+                <!-- Previous Reports Section -->
+                <section class="reports-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Your Reports</h3>
+                    </div>
+                    
+                    <div class="reports-filter">
+                        <div class="filter-group">
+                            <label for="filter-type">Filter by Type</label>
+                            <select id="filter-type" class="form-control">
+                                <option value="all">All Report Types</option>
+                                <option value="Billing Issue">Billing Issue</option>
+                                <option value="Vehicle Problem">Vehicle Problem</option>
+                                <option value="Service Complaint">Service Complaint</option>
+                                <option value="Website Issue">Website Issue</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="reports-list" id="reports-list">
+                        <!-- Sample reports - will be replaced with real data -->
+                         {% for report in reports %}
+                        <div class="report-item" data-type="Billing Issue">
+                            <div class="report-header">
+                                <div>
+                                    <span class="report-id">{{ report['report_id'] }}</span>
+                                    <span class="report-type">{{ report['report_type'] }}</span>
+                                </div>
+                                <div class="report-date">Submitted: {{ report['report_date']}}</div>
+                            </div>
+                            <div class="report-text">
+                                {{ report['report_text'] }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <!-- No reports message -->
+                         {% if reports|length == 0 %}
+                        <div class="no-reports">You haven't submitted any reports yet</div>
+                         {% endif %}
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm Deletion</div>
+                <div class="modal-close">&times;</div>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this report? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline cancel-delete">Cancel</button>
+                <button class="btn btn-danger confirm-delete">Delete Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        // Filter Reports
+        document.getElementById('filter-type').addEventListener('change', function() {
+            const filterValue = this.value.toLowerCase();
+            const reports = document.querySelectorAll('.report-item');
+            
+            reports.forEach(report => {
+                if (filterValue === 'all') {
+                    report.style.display = 'block';
+                } else {
+                    const reportType = report.dataset.type.toLowerCase();
+                    report.style.display = reportType.includes(filterValue) ? 'block' : 'none';
+                }
+            });
+        });
+        
+        // Delete Report Functionality
+        let reportToDelete = null;
+        
+        function showDeleteModal(reportElement) {
+            reportToDelete = reportElement;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+        
+        function hideDeleteModal() {
+            document.getElementById('delete-modal').style.display = 'none';
+            reportToDelete = null;
+        }
+        
+        // Add event listeners to existing delete buttons
+        document.querySelectorAll('.delete-report').forEach(btn => {
+            btn.addEventListener('click', function() {
+                showDeleteModal(this.closest('.report-item'));
+            });
+        });
+        
+        // Modal event listeners
+        document.querySelector('.modal-close').addEventListener('click', hideDeleteModal);
+        document.querySelector('.cancel-delete').addEventListener('click', hideDeleteModal);
+        document.querySelector('.confirm-delete').addEventListener('click', function() {
+            if (reportToDelete) {
+                reportToDelete.remove();
+                hideDeleteModal();
+                alert('Report has been deleted');
+            }
+        });
+        
+        // Close modal when clicking outside
+        document.getElementById('delete-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
+            }
+        });
+        
+        // In a real application, you would fetch the reports data from your backend
+        // Here's a sample of what that might look like:
+        /*
+        fetch('/api/get-reports')
+            .then(response => response.json())
+            .then(data => {
+                const reportsList = document.getElementById('reports-list');
+                reportsList.innerHTML = '';
+                
+                if (data.length === 0) {
+                    reportsList.innerHTML = '<div class="no-reports">You haven\'t submitted any reports yet</div>';
+                    return;
+                }
+                
+                data.forEach(report => {
+                    const reportItem = document.createElement('div');
+                    reportItem.className = 'report-item';
+                    reportItem.dataset.type = report.report_type;
+                    reportItem.innerHTML = `
+                        <div class="report-header">
+                            <div>
+                                <span class="report-id">${report.report_id}</span>
+                                <span class="report-type">${report.report_type}</span>
+                            </div>
+                            <div class="report-date">Submitted: ${formatDate(report.created_at)}</div>
+                        </div>
+                        <div class="report-text">
+                            ${report.report_text}
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-danger btn-sm delete-report">Delete</button>
+                        </div>
+                    `;
+                    reportsList.appendChild(reportItem);
+                });
+                
+                // Add event listeners to new delete buttons
+                document.querySelectorAll('.delete-report').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        showDeleteModal(this.closest('.report-item'));
+                    });
+                });
+            });
+        */
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VehiRental | Feedback</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/sidebar.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --danger: #ef233c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin: 0 220px;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header-title h2 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+        
+        /* Feedback Sections */
+        .feedback-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+        
+        .feedback-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        /* Booking Selector */
+        .booking-selector {
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+        
+        /* Rating System */
+        .rating-system {
+            margin: 20px 0;
+        }
+        
+        .rating-title {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .star {
+            font-size: 24px;
+            color: var(--light-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .star.selected {
+            color: var(--warning);
+        }
+        
+        .star:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Feedback Form */
+        .feedback-form textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Submit Button */
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 15px;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+        }
+        
+        /* Previous Feedback */
+        .feedback-list {
+            margin-top: 20px;
+        }
+        
+        .feedback-item {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .feedback-item:last-child {
+            border-bottom: none;
+        }
+        
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .feedback-booking {
+            font-weight: 600;
+        }
+        
+        .feedback-date {
+            font-size: 13px;
+            color: var(--gray);
+        }
+        
+        .feedback-rating {
+            color: var(--warning);
+            margin-bottom: 10px;
+        }
+        
+        .feedback-comment {
+            line-height: 1.5;
+        }
+        
+        .no-feedback {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .feedback-header {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo" style="padding: 2px 25px;">
+                <img src="../static/images/logo.png" alt="VehRental Logo">
+                <div class="logo-text">
+                    <span class="vehi">Vehi</span><span class="rental">Rental</span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/book-vehicle" class="nav-link">
+                        <i class="fas fa-car"></i>
+                        <span>Book Vehicle</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/booking-history" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>Booking History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/feedback" class="nav-link active">
+                        <i class="fas fa-star"></i>
+                        <span>Feedback</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/report" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/profile" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>    
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h2>Feedback</h2>
+                </div>
+            </header>
+            
+            <!-- Feedback Container -->
+            <div class="feedback-container">
+                <!-- Submit Feedback Section -->
+                <section class="feedback-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Submit Feedback</h3>
+                    </div>
+                    
+                    <form action="/home/feedback" method="POST" class="feedback-form" id="feedback-form">
+
+                        <div class="booking-selector">
+                        <div class="form-group">    
+                            <label for="booking-select">Select Booking</label>
+                            <select id="booking-select" name="booking_id" class="form-control" value="">
+                                <option value="">-- Select a booking to provide feedback --</option>
+                                {% for booking_id in booking_ids %}
+                                    <option value={{booking_id['booking_id']}}>{{booking_id['booking_id']}} - {{booking_id['class_type']}} {{booking_id['class']}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        </div>
+                    
+                        <div class="rating-system">
+                            <div class="rating-title">Your Rating</div>
+                            <div class="rating-stars" id="rating-stars">
+                                <i class="fas fa-star star" data-rating="1"></i>
+                                <i class="fas fa-star star" data-rating="2"></i>
+                                <i class="fas fa-star star" data-rating="3"></i>
+                                <i class="fas fa-star star" data-rating="4"></i>
+                                <i class="fas fa-star star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" id="rating-value" name="rating" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="feedback-comment">Your Feedback</label>
+                            <textarea id="feedback-comment" class="form-control" name="comment" placeholder="Share your experience with this rental..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                    </form>
+                </section>
+                
+                <!-- Previous Feedback Section -->
+                <section class="feedback-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Your Previous Feedback</h3>
+                    </div>
+                    
+                    <div class="feedback-list" id="feedback-list">
+                        <!-- This will be populated with feedback data from the backend -->
+                        {% for feedback in feedbacks %}
+                            <div class="feedback-item">
+                                <div class="feedback-header">
+                                    <div class="feedback-booking">{{feedback['booking_id']}} - {{feedback['class_type']}} {{feedback['class']}}</div>
+                                    <div class="feedback-date">Submitted on: {{feedback['feedback_date']}}</div>
+                                </div>
+                                <div class="feedback-rating">
+                                    {% for i in range(feedback['rating']) %}
+                                    <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                    ({{feedback['rating']}}/5)
+                                </div>
+                                <div class="feedback-comment">
+                                    {{feedback['comment']}} 
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Star Rating System
+        const stars = document.querySelectorAll('.star');
+        const ratingValue = document.getElementById('rating-value');
+        
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                const rating = this.dataset.rating;
+                ratingValue.value = rating;
+                
+                stars.forEach(s => {
+                    s.classList.remove('selected');
+                    if (s.dataset.rating <= rating) {
+                        s.classList.add('selected');
+                    }
+                });
+            });
+        });
+        
+        // In a real application, you would fetch the feedback data from your backend
+        // Here's a sample of what that might look like:
+        
+    </script>
+</body>
+</html>

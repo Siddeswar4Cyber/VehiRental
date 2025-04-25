@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VehiRental | Maintenance Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/sidebar.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --primary-dark: #2667cc;
+            --secondary: #8338ec;
+            --accent: #ff006e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --success: #38b000;
+            --warning: #ffbe0b;
+            --danger: #ef233c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            margin: 0 200px;
+        }
+        
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .header-title h2 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--light-gray);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 500;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Filters */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-group {
+            margin-bottom: 0;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .filter-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        select.filter-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 15px;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(58, 134, 255, 0.1);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #d11a2a;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .data-table th {
+            background-color: var(--light);
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(58, 134, 255, 0.03);
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-due {
+            background-color: rgba(255, 190, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-ok {
+            background-color: rgba(56, 176, 0, 0.1);
+            color: var(--success);
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            margin-bottom: 20px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filters {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="../static/images/logo.png" alt="VehRental Logo">
+                <div class="logo-text">
+                    <span class="vehi">Vehi</span><span class="rental">Rental</span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/admin/dashboard" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/maintenance" class="nav-link active">
+                        <i class="fas fa-tools"></i>
+                        <span>Maintenance</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/vehicles" class="nav-link">
+                        <i class="fas fa-car"></i>
+                        <span>Vehicles</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/bookings" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Bookings</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/admin/users" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>    
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h2>Maintenance Management</h2>
+                </div>
+            </header>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" id='maint-records-tab'data-tab="records">Maintenance Records</div>
+                <div class="tab" id='maint-dues-tab' data-tab="dues">Maintenance Dues</div>
+            </div>
+            
+            <!-- Maintenance Records Tab -->
+            <div class="tab-content active" id="records-tab">
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="records-vehicle">Vehicle Reg No.</label>
+                        <select id="records-vehicle" class="filter-control">
+                            <option value="">All Vehicles</option>
+                            <option value="MH01AB1234">MH01AB1234</option>
+                            <option value="MH02CD5678">MH02CD5678</option>
+                            <option value="MH03EF9012">MH03EF9012</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="records-date-from">From Date</label>
+                        <input type="date" id="records-date-from" class="filter-control">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="records-date-to">To Date</label>
+                        <input type="date" id="records-date-to" class="filter-control">
+                    </div>
+                    
+                    <div class="filter-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="apply-records-filters">Apply</button>
+                    </div>
+                </div>
+                
+                <!-- Add Record Button -->
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" id="add-maintenance-btn">
+                        <i class="fas fa-plus"></i> Add Maintenance Record
+                    </button>
+                </div>
+                
+                <!-- Records Table -->
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Maintenance ID</th>
+                                <th>Vehicle Reg No.</th>
+                                <th>Description</th>
+                                <th>Cost</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-list">
+                            {% for record in records %}
+                            <tr>
+                                <td>{{ record.id }}</td>
+                                <td>{{ record.vehicle_reg_no }}</td>
+                                <td>{{ record.description }}</td>
+                                <td>{{ record.cost }}</td>
+                                <td>{{ record.date }}</td>
+                                <td class="actions">
+                                    <button class="btn btn-outline btn-sm edit-record">Edit</button>
+                                    <button class="btn btn-danger btn-sm delete-record">Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <!-- Sample Record 1 -->
+                            <tr>
+                                <td>MT-2023-001</td>
+                                <td>MH01AB1234</td>
+                                <td>Oil change and filter replacement</td>
+                                <td>₹1,500</td>
+                                <td>2023-06-15</td>
+                                <td class="actions">
+                                    <button class="btn btn-outline btn-sm edit-record">Edit</button>
+                                    <button class="btn btn-danger btn-sm delete-record">Delete</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Sample Record 2 -->
+                            <tr>
+                                <td>MT-2023-002</td>
+                                <td>MH02CD5678</td>
+                                <td>Brake pad replacement</td>
+                                <td>₹3,200</td>
+                                <td>2023-06-20</td>
+                                <td class="actions">
+                                    <button class="btn btn-outline btn-sm edit-record">Edit</button>
+                                    <button class="btn btn-danger btn-sm delete-record">Delete</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Sample Record 3 -->
+                            <tr>
+                                <td>MT-2023-003</td>
+                                <td>MH01AB1234</td>
+                                <td>Tire rotation and balancing</td>
+                                <td>₹800</td>
+                                <td>2023-07-05</td>
+                                <td class="actions">
+                                    <button class="btn btn-outline btn-sm edit-record">Edit</button>
+                                    <button class="btn btn-danger btn-sm delete-record">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- No Records Message (hidden by default) -->
+                <div class="no-data" id="no-records" style="display: none;">
+                    <i class="fas fa-tools" style="font-size: 40px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <h3>No Maintenance Records Found</h3>
+                    <p>There are no maintenance records matching your filters.</p>
+                </div>
+            </div>
+            
+            <!-- Maintenance Dues Tab -->
+            <div class="tab-content" id="dues-tab">
+                <!-- Filters -->
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="dues-status">Status</label>
+                        <select id="dues-status" class="filter-control">
+                            <option value="">All Statuses</option>
+                            <option value="due">Due</option>
+                            <option value="ok">No Maintenance Required</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="dues-location">Location</label>
+                        <input type="text" id="dues-location" class="filter-control" placeholder="Pincode">
+                    </div>
+                    
+                    <div class="filter-group" style="align-self: flex-end;">
+                        <button class="btn btn-primary" id="apply-dues-filters">Apply</button>
+                    </div>
+                </div>
+                
+                <!-- Dues Table -->
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle Reg No.</th>
+                                <th>Class</th>
+                                <th>Location</th>
+                                <th>Last Maintenance</th>
+                                <th>Next Maintenance</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dues-list">
+                            {% for due_record in due_records %}
+                            <tr>
+                                <td>{{ due_record.vehicle_reg_no }}</td>
+                                <td>{{ due_record.class }}</td>
+                                <td>{{ due_record.location }}</td>
+                                <td>{{ due_record.last_maintenance }}</td>
+                                <td>{{ due_record.next_maintenance }}</td>
+                                <td><span class="status-badge status-due">Due</span></td>
+                                <td class="actions">
+                                    <button class="btn btn-primary btn-sm perform-maintenance">Perform Maintenance</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            <!-- Sample Vehicle 1 - Due -->
+                            <tr>
+                                <td>MH01AB1234</td>
+                                <td>Sedan</td>
+                                <td>400001</td>
+                                <td>2023-07-05</td>
+                                <td>2023-09-05</td>
+                                <td><span class="status-badge status-due">Due</span></td>
+                                <td class="actions">
+                                    <button class="btn btn-primary btn-sm perform-maintenance">Perform Maintenance</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Sample Vehicle 2 - OK -->
+                            <tr>
+                                <td>MH02CD5678</td>
+                                <td>SUV</td>
+                                <td>400002</td>
+                                <td>2023-08-10</td>
+                                <td>2023-11-10</td>
+                                <td><span class="status-badge status-ok">OK</span></td>
+                                <td class="actions">
+                                    <button class="btn btn-primary btn-sm perform-maintenance">Perform Maintenance</button>
+                                </td>
+                            </tr>
+                            
+                            <!-- Sample Vehicle 3 - Due -->
+                            <tr>
+                                <td>MH03EF9012</td>
+                                <td>Royal Enfield</td>
+                                <td>400003</td>
+                                <td>2023-06-20</td>
+                                <td>2023-08-20</td>
+                                <td><span class="status-badge status-due">Due</span></td>
+                                <td class="actions">
+                                    <button class="btn btn-primary btn-sm perform-maintenance">Perform Maintenance</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- No Dues Message (hidden by default) -->
+                <div class="no-data" id="no-dues" style="display: none;">
+                    <i class="fas fa-check-circle" style="font-size: 40px; color: var(--gray); margin-bottom: 15px;"></i>
+                    <h3>No Maintenance Dues</h3>
+                    <p>All vehicles are up to date with their maintenance schedules.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Maintenance Modal -->
+
+    <div class="modal" id="maintenance-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modal-title" >Add Maintenance Record</div>
+                <div class="modal-close">&times;</div>
+            </div>
+            <form id="maintenance-form" action="/admin/maintenance" method="POST">
+            <div class="modal-body">
+                    <input type="hidden" id="maintenance-id" name="id">
+                    
+                    <div class="form-group">
+                        <label for="modal-vehicle-reg">Vehicle Registration No.</label>
+                        <input type="text" id="modal-vehicle-reg" class="form-control" name="reg_no" required>
+                        <!--select id="modal-vehicle-reg" class="form-control" name="reg_no" required>
+                            <option value="">-- Select Vehicle --</option>
+                            {%for vehicle in vehicles%}
+                            <option value="{{vehicle.reg_no}}">{{vehicle.reg_no}} ({{vehicle.class}})</option>
+                            {%endfor%}
+                            <option value="MH01AB1234">MH01AB1234 (Sedan)</option>
+                            <option value="MH02CD5678">MH02CD5678 (SUV)</option>
+                            <option value="MH03EF9012">MH03EF9012 (Royal Enfield)</option>
+                        </select-->
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-description">Description</label>
+                        <textarea id="modal-description" class="form-control" name="description" required placeholder="Describe the maintenance performed..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-cost">Cost (₹)</label>
+                        <input type="number" id="modal-cost" name="cost" class="form-control" required min="0" step="0.01">
+                    </div> 
+                    
+                    <div class="form-group">
+                        <label for="modal-date">Date</label>
+                        <input type="date" id="modal-date" name="date" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="modal-next-date">Next Maintenance Date</label>
+                        <input type="date" id="modal-next-date" name="next_date" class="form-control" required>
+                    </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline cancel-modal">Cancel</button>
+                <button class="btn btn-primary save-maintenance" id="btn-save" name="action" value="Add_Record">Save</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm Deletion</div>
+                <div class="modal-close">&times;</div>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this maintenance record? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline cancel-delete">Cancel</button>
+                <button class="btn btn-danger confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                console.log(this.dataset.tab)
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                this.classList.add('active');
+                const tabId = this.dataset.tab;
+                console.log(tabId);
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Filter Functionality for Records
+        document.getElementById('apply-records-filters').addEventListener('click', function() {
+            const vehicleFilter = document.getElementById('records-vehicle').value;
+            const dateFrom = document.getElementById('records-date-from').value;
+            const dateTo = document.getElementById('records-date-to').value;
+            
+            const records = document.querySelectorAll('#records-list tr');
+            let visibleCount = 0;
+            
+            records.forEach(record => {
+                const regNo = record.cells[1].textContent;
+                const recordDate = record.cells[4].textContent;
+                
+                const matchesVehicle = !vehicleFilter || regNo === vehicleFilter;
+                const matchesDateFrom = !dateFrom || recordDate >= dateFrom;
+                const matchesDateTo = !dateTo || recordDate <= dateTo;
+                
+                if (matchesVehicle && matchesDateFrom && matchesDateTo) {
+                    record.style.display = '';
+                    visibleCount++;
+                } else {
+                    record.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no records message
+            document.getElementById('no-records').style.display = visibleCount === 0 ? 'block' : 'none';
+        });
+        
+        // Filter Functionality for Dues
+        document.getElementById('apply-dues-filters').addEventListener('click', function() {
+            const statusFilter = document.getElementById('dues-status').value;
+            const locationFilter = document.getElementById('dues-location').value.toLowerCase();
+            
+            const dues = document.querySelectorAll('#dues-list tr');
+            let visibleCount = 0;
+            
+            dues.forEach(due => {
+                const status = due.cells[5].textContent.toLowerCase();
+                const location = due.cells[2].textContent.toLowerCase();
+                
+                const matchesStatus = !statusFilter || status === statusFilter;
+                const matchesLocation = !locationFilter || location.includes(locationFilter);
+                
+                if (matchesStatus && matchesLocation) {
+                    due.style.display = '';
+                    visibleCount++;
+                } else {
+                    due.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no dues message
+            document.getElementById('no-dues').style.display = visibleCount === 0 ? 'block' : 'none';
+        });
+        
+        // Modal Functionality
+        function showModal(title, data = null) {
+            document.getElementById('modal-title').textContent = title;
+            
+            if (data) {
+                // Editing existing record
+                document.getElementById('maintenance-id').value = data.id || '';
+                document.getElementById('modal-vehicle-reg').value = data.regNo || '';
+                document.getElementById('modal-description').value = data.description || '';
+                document.getElementById('modal-cost').value = data.cost || '';
+                document.getElementById('modal-date').value = data.date || '';
+                document.getElementById('modal-next-date').value = data.nextDate || '';
+                document.getElementById('btn-save').value = data.type || '';
+
+            } else {
+                // Adding new record
+                document.getElementById('maintenance-form').reset();
+                document.getElementById('maintenance-id').value = '';
+                document.getElementById('modal-date').value = new Date().toISOString().split('T')[0];
+            }
+            
+            document.getElementById('maintenance-modal').style.display = 'flex';
+        }
+        
+        function hideModal() {
+            document.getElementById('maintenance-modal').style.display = 'none';
+        }
+        
+        // Add Maintenance Button
+        document.getElementById('add-maintenance-btn').addEventListener('click', function() {
+            showModal('Add Maintenance Record');
+        });
+        
+        // Edit Maintenance Buttons
+        document.querySelectorAll('.edit-record').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const data = {
+                    id: row.cells[0].textContent,
+                    regNo: row.cells[1].textContent,
+                    description: row.cells[2].textContent,
+                    cost: row.cells[3].textContent.replace('₹', ''),
+                    date: row.cells[4].textContent,
+                    // For demo, next date is set to current date + 2 months
+                    nextDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T')[0],
+                    type: "Edit_Record"
+                };
+                showModal('Edit Maintenance Record', data);
+            });
+        });
+        
+        // Perform Maintenance Buttons
+        document.querySelectorAll('.perform-maintenance').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const data = {
+                    regNo: row.cells[0].textContent,
+                    date: new Date().toISOString().split('T')[0],
+                    // For demo, next date is set to current date + 2 months
+                    nextDate: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T')[0],
+                    type: "Perform_Maintenance"
+                };
+                showModal('Perform Maintenance', data);
+            });
+        });
+        
+        /* Save Maintenance Form
+        document.querySelector('.save-maintenance').addEventListener('click', function() {
+            const formData = {
+                id: document.getElementById('maintenance-id').value,
+                vehicle_reg: document.getElementById('modal-vehicle-reg').value,
+                description: document.getElementById('modal-description').value,
+                cost: document.getElementById('modal-cost').value,
+                date: document.getElementById('modal-date').value,
+                next_date: document.getElementById('modal-next-date').value
+            };
+            
+            // Validate form
+            if (!formData.vehicle_reg || !formData.description || !formData.cost || !formData.date || !formData.next_date) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // In a real app, you would send this data to your backend
+            console.log('Saving maintenance record:', formData);
+            
+            // For demo purposes, we'll just show a success message
+            alert('Maintenance record saved successfully!');
+            hideModal();
+        });*/
+        
+        // Delete Functionality
+        let recordToDelete = null;
+        
+        function showDeleteModal(recordId) {
+            recordToDelete = recordId;
+            document.getElementById('delete-modal').style.display = 'flex';
+        }
+        
+        function hideDeleteModal() {
+            document.getElementById('delete-modal').style.display = 'none';
+            recordToDelete = null;
+        }
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-record').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const recordId = this.closest('tr').cells[0].textContent;
+                showDeleteModal(recordId);
+            });
+        });
+        
+        // Modal event listeners
+        document.querySelectorAll('.modal-close, .cancel-modal, .cancel-delete').forEach(el => {
+            el.addEventListener('click', function() {
+                if (this.classList.contains('cancel-delete')) {
+                    hideDeleteModal();
+                } else {
+                    hideModal();
+                }
+            });
+        });
+        
+        document.querySelector('.confirm-delete').addEventListener('click', function() {
+            if (recordToDelete) {
+                // In a real app, you would send this to your backend
+                console.log('Deleting maintenance record:', recordToDelete);
+                
+                // Send delete request to backend
+                fetch(`/admin/delete-maintenance?maintenance_id=${encodeURIComponent(recordToDelete)}`, {
+                    method: 'POST',
+                })
+                .then(response => {
+                    console.log(response)
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.json();
+                    }
+                    console.log(response);
+                })
+                .then(data => {
+                    if (data?.success) {
+                        // Remove the record from the table
+                        document.querySelector(`#records-list tr td:first-child:contains(${recordToDelete})`).closest('tr').remove();
+                        alert('Maintenance record deleted successfully');
+                    } else {
+                        alert('Error deleting record: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+                
+                hideDeleteModal();
+            }
+        });
+        
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (this.id === 'delete-modal') {
+                        hideDeleteModal();
+                    } else {
+                        hideModal();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

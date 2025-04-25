@@ -1,0 +1,235 @@
+<!-- OTP Verification Modal (add this before </form>) -->
+<div id="otpModal" class="otp-modal">
+    <div class="otp-content">
+        <span class="close-otp">&times;</span>
+        <h3>Verify Your Email</h3>
+        <p>We've sent a 6-digit code to <span id="userEmail"></span></p>
+        
+        <div class="otp-inputs">
+            <input type="text" maxlength="1" class="otp-digit" autofocus>
+            <input type="text" maxlength="1" class="otp-digit">
+            <input type="text" maxlength="1" class="otp-digit">
+            <input type="text" maxlength="1" class="otp-digit">
+            <input type="text" maxlength="1" class="otp-digit">
+            <input type="text" maxlength="1" class="otp-digit">
+        </div>
+        
+        <p class="otp-timer">Resend code in <span id="countdown">60</span>s</p>
+        <button id="resendOtp" class="resend-btn" disabled>Resend OTP</button>
+        
+        <button id="verifyOtp" class="verify-btn">Verify & Continue</button>
+    </div>
+</div>
+
+
+
+
+
+
+/* OTP Verification Styles */
+.otp-modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.otp-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 25px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: modalFadeIn 0.3s;
+}
+
+@keyframes modalFadeIn {
+    from {opacity: 0; transform: translateY(-20px);}
+    to {opacity: 1; transform: translateY(0);}
+}
+
+.close-otp {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.otp-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.otp-digit {
+    width: 45px;
+    height: 55px;
+    text-align: center;
+    font-size: 24px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s;
+}
+
+.otp-digit:focus {
+    border-color: #4361ee;
+    outline: none;
+    box-shadow: 0 0 5px rgba(67, 97, 238, 0.3);
+}
+
+.otp-timer {
+    color: #666;
+    margin: 15px 0;
+}
+
+.resend-btn {
+    background: none;
+    border: none;
+    color: #4361ee;
+    cursor: pointer;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.resend-btn:disabled {
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.verify-btn {
+    background: linear-gradient(135deg, #3a0ca3, #4361ee);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.verify-btn:hover {
+    background: linear-gradient(135deg, #4361ee, #3a0ca3);
+    transform: translateY(-2px);
+}
+
+
+
+
+
+
+
+
+// OTP Verification Logic
+let otpTimer;
+const otpModal = document.getElementById('otpModal');
+const userEmailSpan = document.getElementById('userEmail');
+const otpDigits = document.querySelectorAll('.otp-digit');
+const countdownSpan = document.getElementById('countdown');
+const resendOtpBtn = document.getElementById('resendOtp');
+const verifyOtpBtn = document.getElementById('verifyOtp');
+
+// Show OTP modal
+function showOtpModal(email) {
+    userEmailSpan.textContent = email;
+    otpModal.style.display = 'block';
+    startOtpTimer();
+}
+
+// Close OTP modal
+document.querySelector('.close-otp').addEventListener('click', function() {
+    otpModal.style.display = 'none';
+    clearInterval(otpTimer);
+});
+
+// OTP input navigation
+otpDigits.forEach((digit, index) => {
+    digit.addEventListener('input', function() {
+        if (this.value.length === 1) {
+            if (index < otpDigits.length - 1) {
+                otpDigits[index + 1].focus();
+            }
+        }
+    });
+    
+    digit.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && this.value.length === 0) {
+            if (index > 0) {
+                otpDigits[index - 1].focus();
+            }
+        }
+    });
+});
+
+// OTP Timer
+function startOtpTimer() {
+    let timeLeft = 60;
+    countdownSpan.textContent = timeLeft;
+    resendOtpBtn.disabled = true;
+    
+    otpTimer = setInterval(() => {
+        timeLeft--;
+        countdownSpan.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(otpTimer);
+            resendOtpBtn.disabled = false;
+        }
+    }, 1000);
+}
+
+// Resend OTP
+resendOtpBtn.addEventListener('click', function() {
+    // In real app: Call your backend to resend OTP
+    alert('New OTP sent to your email!');
+    startOtpTimer();
+});
+
+// Verify OTP
+verifyOtpBtn.addEventListener('click', function() {
+    let otp = '';
+    otpDigits.forEach(digit => {
+        otp += digit.value;
+    });
+    
+    if (otp.length === 6) {
+        // In real app: Verify OTP with your backend
+        alert('OTP verified successfully!');
+        otpModal.style.display = 'none';
+        clearInterval(otpTimer);
+        
+        // Submit the form after verification
+        document.getElementById('registerForm').submit();
+    } else {
+        alert('Please enter complete OTP code');
+    }
+});
+
+// Modify your existing form submission to show OTP modal first
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+    }
+    
+    // Show OTP modal instead of direct submission
+    showOtpModal(email);
+    
+    // In real app: Call your backend to send OTP here
+    console.log('OTP sent to', email);
+});

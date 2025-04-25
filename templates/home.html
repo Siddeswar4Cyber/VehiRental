@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VehiRental | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../static/css/sidebar.css">
+    <link rel="stylesheet" href="../static/css/home.css">
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo" style="padding: 2px 25px;">
+                <img src="../static/images/logo.png" alt="VehRental Logo">
+                <div class="logo-text">
+                    <span class="vehi">Vehi</span><span class="rental">Rental</span>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/home/dashboard" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/book-vehicle" class="nav-link">
+                        <i class="fas fa-car"></i>
+                        <span>Book Vehicle</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/booking-history" class="nav-link">
+                        <i class="fas fa-history"></i>
+                        <span>Booking History</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/feedback" class="nav-link">
+                        <i class="fas fa-star"></i>
+                        <span>Feedback</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/report" class="nav-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/home/profile" class="nav-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>    
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-title">
+                    <h2>Dashboard</h2>
+                </div>
+                <div class="header-actions">
+                    <div class="profile-dropdown">
+                        <a href="/home/profile">
+                        <img src="../static/images/profile.png" alt="Profile"></a>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Quick Action Card -->
+                <section class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3 class="quick-action-title">Need a Vehicle?</h3>
+                    <p class="quick-action-desc">Book your perfect vehicle for your next journey with just a few clicks</p>
+                    <a href="/home/book-vehicle" class="btn btn-primary">Book a Vehicle Now</a>
+                </section>
+                
+                <!-- Recent Bookings Card -->
+                <section class="recent-bookings-card">
+                    <div class="section-header">
+                        <h3 class="section-title">Recent Bookings</h3>
+                        <a href="/home/booking-history" class="view-all">View All</a>
+                    </div>
+                    {% for booking in recent_bookings %}
+                    <div class="booking-item">
+                        <div class="booking-info">
+                            <div class="booking-vehicle" style="text-transform: capitalize;">{{ booking['class_type'] }}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                                <div class="booking-date">Pickup: {{ booking['pickup_date'] }}</div>
+                                <div class="booking-date">Return: {{ booking['return_date'] }}</div>
+                            <div>
+                        </div>
+                        <div class="booking-status status-{{ booking['status'] }}">{{ booking['status'] }}</div>
+                    </div>
+                    {% endfor %}
+                </section>
+                
+            </div>
+        </main>
+    </div>
+</body>
+</html>
