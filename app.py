@@ -10,7 +10,7 @@ import os
 db = MySQLdb.connect(
     host="localhost",   # Change to your MySQL host
     user="root",       # Change to your MySQL username
-    passwd="Mysqlroot@123", # Change to your MySQL password
+    passwd="", # Change to your MySQL password
     db="vehirental"       # Change to your MySQL Database Name
 )
 cursor = db.cursor()
