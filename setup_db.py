@@ -126,3 +126,29 @@ def insert_initial_data(cursor):
         insert_safe(cursor, 'vehicle_types',
                     ['type_id', 'class_type', 'class', 'icon', 'features', 'price'],
                     vt, 'type_id', vt[0])
+
+def main():
+    # Connect to DB with env vars
+    conn = MySQLdb.connect(
+        host=os.getenv('MYSQL_HOST'),
+        port=int(os.getenv('MYSQL_PORT')),
+        user=os.getenv('MYSQL_USER'),
+        passwd=os.getenv('MYSQL_PASSWORD'),
+        db=os.getenv('MYSQL_DB')
+    )
+    cursor = conn.cursor()
+
+    print("Creating tables...")
+    create_tables(cursor)
+    conn.commit()
+
+    print("Inserting initial data...")
+    insert_initial_data(cursor)
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+    print("Database setup complete!")
+
+if __name__ == '__main__':
+    main()
