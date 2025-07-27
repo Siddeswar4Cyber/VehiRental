@@ -1,0 +1,3 @@
+toml
+[build]
+packages = ["mariadb-dev", "gcc", "musl-dev", "python3-dev"]
