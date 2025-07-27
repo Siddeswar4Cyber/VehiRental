@@ -8,10 +8,11 @@ import time
 import os
 
 db = MySQLdb.connect(
-    host= os.environ.get('MYSQL_HOST', 'localhost'),   # Change to your MySQL host
-    user= os.environ.get('MYSQL_USER', 'root'),       # Change to your MySQL username
-    passwd= os.environ.get('MYSQL_PASSWORD', ''), # Change to your MySQL password
-    db= os.environ.get('MYSQL_DB', 'vehirental')"       # Change to your MySQL Database Name
+    host=os.getenv('MYSQL_HOST'),
+    port=int(os.getenv('MYSQL_PORT')),
+    user=os.getenv('MYSQL_USER'),
+    passwd=os.getenv('MYSQL_PASSWORD'),
+    db=os.getenv('MYSQL_DB')
 )
 cursor = db.cursor()
 
